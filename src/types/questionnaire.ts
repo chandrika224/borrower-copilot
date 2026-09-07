@@ -22,4 +22,5 @@ export interface Question {
   required: boolean
   helperText?: string
   options?: QuestionOption[]
+  allowUnknown?: boolean
 }

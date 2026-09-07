@@ -3,7 +3,7 @@ import type { Question } from '../types/questionnaire'
 interface QuestionRendererProps {
   question: Question
   value: string | number | undefined
-  onChange: (value: string | number) => void
+  onChange: (value: string | number | undefined) => void
 }
 
 export function QuestionRenderer({
@@ -48,6 +48,9 @@ export function QuestionRenderer({
     question.type === 'CURRENCY' ||
     question.type === 'NUMBER'
   ) {
+    const isUnknown =
+      value === 'UNKNOWN'
+
     return (
       <div>
         <div className="relative">
@@ -60,12 +63,22 @@ export function QuestionRenderer({
           <input
             type="number"
             min="0"
-            value={value ?? ''}
-            onChange={(event) =>
-              onChange(
-                Number(event.target.value)
-              )
+            value={
+              typeof value === 'number'
+                ? value
+                : ''
             }
+            disabled={isUnknown}
+            onChange={(event) => {
+              const inputValue =
+                event.target.value
+
+              onChange(
+                inputValue === ''
+                  ? undefined
+                  : Number(inputValue)
+              )
+            }}
             placeholder={
               question.type === 'CURRENCY'
                 ? 'Enter amount'
@@ -81,6 +94,8 @@ export function QuestionRenderer({
               focus:border-slate-900
               focus:ring-2
               focus:ring-slate-900/10
+              disabled:bg-slate-100
+              disabled:text-slate-400
               ${
                 question.type === 'CURRENCY'
                   ? 'pl-9'
@@ -89,6 +104,31 @@ export function QuestionRenderer({
             `}
           />
         </div>
+
+        {question.allowUnknown && (
+          <button
+            type="button"
+            onClick={() =>
+              onChange(
+                isUnknown
+                  ? undefined
+                  : 'UNKNOWN'
+              )
+            }
+            className={`
+              mt-3 text-sm font-medium
+              ${
+                isUnknown
+                  ? 'text-slate-900'
+                  : 'text-slate-500 hover:text-slate-900'
+              }
+            `}
+          >
+            {isUnknown
+              ? '✓ I don’t know'
+              : 'I don’t know'}
+          </button>
+        )}
       </div>
     )
   }

@@ -48,7 +48,7 @@ export interface IncomeProfile {
 export interface ExpenseProfile {
   housing: number
   otherHouseholdExpenses: number
-  existingEMIs: number
+  existingEMIs?: number
 }
 
 export interface LoanRequest {

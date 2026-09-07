@@ -9,10 +9,12 @@ export interface TenureOption {
 }
 
 export interface EMIRecommendationResult {
-  safeEMICeiling: number
-  recommendedEMI: number
-  recommendedTenureMonths: number
+  safeEMICeiling?: number
+  recommendedEMI?: number
+  recommendedTenureMonths?: number
   tenureOptions: TenureOption[]
+  confidence: 'HIGH' | 'LOW'
+  warning?: string
 }
 
 export function calculateEMIRecommendation(
@@ -25,6 +27,20 @@ export function calculateEMIRecommendation(
 
   const safeEMICeiling =
     affordability.safeNewEMICeiling
+
+  // We cannot recommend an EMI when
+  // affordability cannot be calculated safely.
+  if (safeEMICeiling === undefined) {
+    return {
+      safeEMICeiling: undefined,
+      recommendedEMI: undefined,
+      recommendedTenureMonths: undefined,
+      tenureOptions: [],
+      confidence: 'LOW',
+      warning:
+        'A safe EMI cannot be recommended because your existing EMI amount is unknown.',
+    }
+  }
 
   const tenureOptions = [36, 48, 60].map(
     (months) => {
@@ -65,9 +81,11 @@ export function calculateEMIRecommendation(
 
   return {
     safeEMICeiling,
-    recommendedEMI: recommendedOption.emi,
+    recommendedEMI:
+      recommendedOption.emi,
     recommendedTenureMonths:
       recommendedOption.months,
     tenureOptions,
+    confidence: 'HIGH',
   }
 }

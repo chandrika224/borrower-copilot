@@ -33,11 +33,20 @@ export function Questionnaire() {
   const currentQuestion =
     questions[currentIndex]
 
-  function handleAnswer(value: string | number) {
-    setAnswers((previous) => ({
-      ...previous,
-      [currentQuestion.id]: value,
-    }))
+ function handleAnswer(
+    value: string | number | undefined
+  ) {
+    setAnswers((previous) => {
+      const next = { ...previous }
+
+      if (value === undefined) {
+        delete next[currentQuestion.id]
+      } else {
+        next[currentQuestion.id] = value
+      }
+
+      return next
+    })
 
     setError(null)
   }
@@ -149,17 +158,26 @@ export function Questionnaire() {
   const isLastQuestion =
     currentIndex === questionCount - 1
 
+ function startNewAssessment() {
+  setAnswers({})
+  setQuestions(coreQuestions)
+  setCurrentIndex(0)
+  setPhase('CORE')
+  setAssessment(null)
+  setError(null)
+}
+
   /*
    * Show results after assessment
    */
-  if (assessment) {
-    return (
-      <ResultsDashboard
-        assessment={assessment}
-      />
-    )
-  }
-
+ if (assessment) {
+  return (
+    <ResultsDashboard
+      assessment={assessment}
+      onNewAssessment={startNewAssessment}
+    />
+  )
+}
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6">
       <div className="mx-auto max-w-3xl">

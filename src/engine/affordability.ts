@@ -5,11 +5,13 @@ const MAX_DISPOSABLE_SHARE = 0.6
 
 export interface AffordabilityResult {
   monthlyIncome: number
-  existingEMIs: number
-  disposableIncome: number
-  foirBasedEMICeiling: number
-  disposableBasedEMICeiling: number
-  safeNewEMICeiling: number
+  existingEMIs?: number
+  disposableIncome?: number
+  foirBasedEMICeiling?: number
+  disposableBasedEMICeiling?: number
+  safeNewEMICeiling?: number
+  confidence: 'HIGH' | 'MEDIUM' | 'LOW'
+  warnings: string[]
 }
 
 export function calculateAffordability(
@@ -20,6 +22,23 @@ export function calculateAffordability(
 
   const existingEMIs =
     borrower.expenses.existingEMIs
+
+  // We cannot safely calculate affordability
+  // when existing EMI is unknown.
+  if (existingEMIs === undefined) {
+    return {
+      monthlyIncome,
+      existingEMIs: undefined,
+      disposableIncome: undefined,
+      foirBasedEMICeiling: undefined,
+      disposableBasedEMICeiling: undefined,
+      safeNewEMICeiling: undefined,
+      confidence: 'LOW',
+      warnings: [
+        'Existing EMI amount is unknown, so we cannot safely calculate how much room is available for a new EMI.',
+      ],
+    }
+  }
 
   const disposableIncome =
     monthlyIncome
@@ -61,5 +80,7 @@ export function calculateAffordability(
     safeNewEMICeiling: Math.round(
       safeNewEMICeiling
     ),
+    confidence: 'HIGH',
+    warnings: [],
   }
 }

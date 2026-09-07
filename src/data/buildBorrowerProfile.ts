@@ -19,7 +19,10 @@ export function buildBorrowerProfile(
       otherHouseholdExpenses: Number(
         answers['household-expenses']
       ),
-      existingEMIs: Number(answers['existing-emis']),
+      existingEMIs:
+        answers['existing-emis'] === 'UNKNOWN'
+          ? undefined
+          : Number(answers['existing-emis']),
     },
 
     credit: {

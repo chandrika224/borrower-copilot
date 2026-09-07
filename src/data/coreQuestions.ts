@@ -74,16 +74,16 @@ export const coreQuestions: Question[] = [
     ],
   },
 
-  {
+    {
     id: 'existing-emis',
     section: 'EXPENSES',
     text: 'How much do you currently pay toward loans or EMIs each month?',
     type: 'CURRENCY',
     required: true,
+    allowUnknown: true,
     helperText:
-      'Include personal, vehicle, home, or other regular loan repayments.',
+      "Include personal, vehicle, home, app loans, or other regular loan repayments. If you're not sure of the total, you can tell us.",
   },
-
   {
     id: 'housing-expenses',
     section: 'EXPENSES',

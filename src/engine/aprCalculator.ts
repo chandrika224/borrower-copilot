@@ -1,14 +1,14 @@
 export interface APRResult {
-  loanAmount: number
+  loanAmount?: number
   annualRate: number
-  tenureMonths: number
+  tenureMonths?: number
   processingFeePercent: number
-  processingFee: number
-  emi: number
-  totalRepayment: number
-  totalInterest: number
-  totalBorrowingCost: number
-  effectiveAPR: number
+  processingFee?: number
+  emi?: number
+  totalRepayment?: number
+  totalInterest?: number
+  totalBorrowingCost?: number
+  effectiveAPR?: number
 }
 
 import { calculateEMI } from './emiCalculator'

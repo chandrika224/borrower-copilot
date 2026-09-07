@@ -4,6 +4,7 @@ export function validateAnswer(
   question: Question,
   value: string | number | undefined
 ): string | null {
+
   if (
     question.required &&
     (value === undefined || value === '')
@@ -20,10 +21,20 @@ export function validateAnswer(
 
   if (
     question.type === 'CURRENCY' &&
-    typeof value === 'number' &&
-    value <= 0
+    typeof value === 'number'
   ) {
-    return 'Please enter an amount greater than ₹0.'
+    const zeroAllowed =
+      question.id === 'existing-emis' ||
+      question.id === 'housing-expenses' ||
+      question.id === 'household-expenses'
+
+    if (!zeroAllowed && value <= 0) {
+      return 'Please enter an amount greater than ₹0.'
+    }
+
+    if (zeroAllowed && value < 0) {
+      return 'Please enter an amount of ₹0 or more.'
+    }
   }
 
   if (

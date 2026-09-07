@@ -2,58 +2,64 @@ import type { BorrowerProfile } from '../types/borrower'
 import { calculateAffordability } from './affordability'
 
 export interface StressTestResult {
+  currentEMI?: number
   incomeReductionPercent: number
+  remainsAffordable?: boolean
+  stressedDisposableIncome?: number
   stressedIncome: number
-  stressedDisposableIncome: number
-  stressedSafeEMI: number
-  currentEMI: number
-  remainsAffordable: boolean
+  stressedSafeEMI?: number
 }
 
 export function calculateStressTest(
   borrower: BorrowerProfile,
-  currentEMI: number
+  currentEMI?: number,
 ): StressTestResult {
   const incomeReductionPercent = 20
 
-  const currentIncome =
-    borrower.income.monthlyNetIncome
-
   const stressedIncome =
-    currentIncome * 0.8
+    borrower.income.monthlyNetIncome *
+    (1 - incomeReductionPercent / 100)
 
-  const existingEMIs =
-    borrower.expenses.existingEMIs
+  const stressedBorrower: BorrowerProfile = {
+    ...borrower,
+    income: {
+      ...borrower.income,
+      monthlyNetIncome: stressedIncome,
+    },
+  }
 
-  const stressedDisposableIncome =
-    stressedIncome
-    - borrower.expenses.housing
-    - borrower.expenses.otherHouseholdExpenses
-    - existingEMIs
-
-  const affordability =
-    calculateAffordability({
-      ...borrower,
-      income: {
-        ...borrower.income,
-        monthlyNetIncome: stressedIncome,
-      },
-    })
+  const stressedAffordability =
+    calculateAffordability(
+      stressedBorrower,
+    )
 
   const stressedSafeEMI =
-    affordability.safeNewEMICeiling
+    stressedAffordability.safeNewEMICeiling
+
+  // Cannot determine stress result.
+  if (
+    currentEMI === undefined ||
+    stressedSafeEMI === undefined
+  ) {
+    return {
+      currentEMI,
+      incomeReductionPercent,
+      remainsAffordable: undefined,
+      stressedDisposableIncome:
+        stressedAffordability.disposableIncome,
+      stressedIncome,
+      stressedSafeEMI,
+    }
+  }
 
   return {
-    incomeReductionPercent,
-    stressedIncome: Math.round(
-      stressedIncome
-    ),
-    stressedDisposableIncome: Math.round(
-      stressedDisposableIncome
-    ),
-    stressedSafeEMI,
     currentEMI,
+    incomeReductionPercent,
     remainsAffordable:
       currentEMI <= stressedSafeEMI,
+    stressedDisposableIncome:
+      stressedAffordability.disposableIncome,
+    stressedIncome,
+    stressedSafeEMI,
   }
 }
