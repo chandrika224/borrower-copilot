@@ -25,6 +25,3 @@ export function calculateEMI(
   return Math.round(emi)
 }
 
-console.log(
-  calculateEMI(800000, 15, 60)
-)

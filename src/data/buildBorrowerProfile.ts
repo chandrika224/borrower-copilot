@@ -10,6 +10,8 @@ export function buildBorrowerProfile(
     income: {
       monthlyNetIncome: Number(answers['monthly-income']),
       type: answers['income-type'] as BorrowerProfile['income']['type'],
+      stability:
+  answers['income-stability'] as BorrowerProfile['income']['stability'],
     },
 
     expenses: {
@@ -25,6 +27,9 @@ export function buildBorrowerProfile(
         answers['credit-score'] !== undefined
           ? Number(answers['credit-score'])
           : undefined,
+
+      paymentHistory:
+  answers['payment-history'] as BorrowerProfile['credit']['paymentHistory'],
     },
 
     loanRequest: {
