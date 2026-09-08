@@ -14,3 +14,33 @@ body {
 * {
   box-sizing: border-box;
 }
+
+@media print {
+  body {
+    background: white;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #negotiation-card,
+  #negotiation-card * {
+    visibility: visible;
+  }
+
+  #negotiation-card {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  @page {
+    size: A4;
+    margin: 16mm;
+  }
+}

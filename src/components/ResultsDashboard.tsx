@@ -9,6 +9,10 @@ export function ResultsDashboard({
   assessment,
   onNewAssessment,
 }: ResultsDashboardProps) {
+
+    const handlePrint = () => {
+    window.print()
+  }
   const {
     decision,
     fairRate,
@@ -42,10 +46,6 @@ export function ResultsDashboard({
     value === undefined
       ? 'Not available'
       : `${value} months`
-
-  // =====================================================
-  // DECISION STYLE
-  // =====================================================
 
     // =====================================================
   // DECISION STYLE
@@ -1022,294 +1022,353 @@ export function ResultsDashboard({
 
         </section>
 
-        {/* =====================================================
-            04 — NEGOTIATION CARD
-        ====================================================== */}
-        <section className="mb-10">
+       {/* =====================================================
+    04 — NEGOTIATION CARD
+====================================================== */}
+<section className="mb-10">
 
-          <div className="mb-5">
+  {/* Section introduction */}
+  <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
-            <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3">
 
-              <span className="text-xs font-bold tracking-[0.2em] text-slate-400">
-                04
-              </span>
+      <span className="text-xs font-bold tracking-[0.2em] text-slate-400">
+        04
+      </span>
 
-              <h3 className="text-xl font-bold text-slate-950">
-                Your Negotiation Card
-              </h3>
+      <h3 className="text-xl font-bold text-slate-950">
+        Your Negotiation Card
+      </h3>
 
-            </div>
+    </div>
 
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-              A compact summary you can use when comparing or
-              negotiating a loan offer with a lender.
-            </p>
+    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+      A compact summary you can use when comparing or
+      negotiating a loan offer with a lender.
+    </p>
 
-          </div>
+  </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
 
-            {/* Card header */}
-            <div className="border-b border-slate-200 pb-5">
+  {/* =====================================================
+      PRINTABLE NEGOTIATION CARD
+  ====================================================== */}
+  <div
+    id="negotiation-card"
+    className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"
+  >
 
-              <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
-                BorrowWise
-              </p>
+    {/* Card header */}
+    <div className="border-b border-slate-200 pb-5">
 
-              <h4 className="mt-2 text-2xl font-bold text-slate-950">
-                {decision.decision === 'NEED_MORE_INFO'
-                  ? 'Information I need before negotiating'
-                  : 'Loan terms I should target'}
-              </h4>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                {decision.decision === 'NEED_MORE_INFO'
-                  ? 'We need to confirm your existing loan obligations before giving you a safe borrowing target.'
-                  : 'These are affordability-based targets, not a lender approval or guaranteed rate.'}
-              </p>
+        <div>
 
-            </div>
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+            BorrowWise
+          </p>
 
-            {/* Key targets */}
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <h4 className="mt-2 text-2xl font-bold text-slate-950">
+            {decision.decision === 'NEED_MORE_INFO'
+              ? 'Information I need before negotiating'
+              : 'Loan terms I should target'}
+          </h4>
 
-              <div className="rounded-2xl bg-slate-50 p-4">
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+            {decision.decision === 'NEED_MORE_INFO'
+              ? 'We need to confirm your existing loan obligations before giving you a safe borrowing target.'
+              : 'These are affordability-based targets, not a lender approval or guaranteed rate.'}
+          </p>
 
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Target loan amount
-                </p>
+        </div>
 
-                <p className="mt-2 text-xl font-bold text-slate-950">
-                  {formatCurrency(
-                    recommendedAmount.recommendedAmount,
-                  )}
-                </p>
 
-              </div>
+        {/* Save as PDF button */}
+        <button
+          type="button"
+          onClick={handlePrint}
+          className="print:hidden shrink-0 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+        >
+          Save as PDF
+        </button>
 
-              <div className="rounded-2xl bg-slate-50 p-4">
+      </div>
 
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Target rate
-                </p>
+    </div>
 
-                <p className="mt-2 text-xl font-bold text-slate-950">
-                  {fairRate.lowRate}% – {fairRate.highRate}%
-                </p>
 
-              </div>
+    {/* =====================================================
+        KEY TARGETS
+    ====================================================== */}
+    <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
-              <div className="rounded-2xl bg-slate-50 p-4">
+      {/* Target loan amount */}
+      <div className="rounded-2xl bg-slate-50 p-4">
 
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  EMI ceiling
-                </p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          Target loan amount
+        </p>
 
-                <p className="mt-2 text-xl font-bold text-slate-950">
-                  {formatCurrency(
-                    emiRecommendation.safeEMICeiling,
-                  )}
-                </p>
+        <p className="mt-2 text-xl font-bold text-slate-950">
+          {formatCurrency(
+            recommendedAmount.recommendedAmount,
+          )}
+        </p>
 
-              </div>
+      </div>
 
-              <div className="rounded-2xl bg-slate-50 p-4">
 
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Target tenure
-                </p>
+      {/* Target rate */}
+      <div className="rounded-2xl bg-slate-50 p-4">
 
-                <p className="mt-2 text-xl font-bold text-slate-950">
-                  {formatTenure(
-                    emiRecommendation.recommendedTenureMonths,
-                  )}
-                </p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          Target rate
+        </p>
 
-              </div>
+        <p className="mt-2 text-xl font-bold text-slate-950">
 
-            </div>
+          {fairRate.lowRate !== undefined &&
+          fairRate.highRate !== undefined
+            ? `${fairRate.lowRate}% – ${fairRate.highRate}%`
+            : 'Not available'}
 
-            {/* Cost */}
-            <div className="mt-6 rounded-2xl border border-slate-200 p-5">
+        </p>
 
-              <h5 className="text-sm font-bold text-slate-950">
-                Ask for the full cost, not just the interest rate
-              </h5>
+      </div>
 
-              <div className="mt-4 grid gap-4 sm:grid-cols-3">
 
-                <div>
+      {/* EMI ceiling */}
+      <div className="rounded-2xl bg-slate-50 p-4">
 
-                  <p className="text-xs font-semibold text-slate-500">
-                    Estimated APR
-                  </p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          EMI ceiling
+        </p>
 
-                  <p className="mt-1 text-lg font-bold text-slate-950">
-                    {formatPercent(
-                      apr.effectiveAPR,
-                    )}
-                  </p>
+        <p className="mt-2 text-xl font-bold text-slate-950">
+          {formatCurrency(
+            emiRecommendation.safeEMICeiling,
+          )}
+        </p>
 
-                </div>
+      </div>
 
-                <div>
 
-                  <p className="text-xs font-semibold text-slate-500">
-                    Processing fee
-                  </p>
+      {/* Target tenure */}
+      <div className="rounded-2xl bg-slate-50 p-4">
 
-                  <p className="mt-1 text-lg font-bold text-slate-950">
-                    {formatCurrency(
-                      apr.processingFee,
-                    )}
-                  </p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          Target tenure
+        </p>
 
-                  <p className="mt-1 text-xs text-slate-500">
-                    Assumed {apr.processingFeePercent}%
-                  </p>
+        <p className="mt-2 text-xl font-bold text-slate-950">
+          {formatTenure(
+            emiRecommendation.recommendedTenureMonths,
+          )}
+        </p>
 
-                </div>
+      </div>
 
-                <div>
-
-                  <p className="text-xs font-semibold text-slate-500">
-                    Total interest
-                  </p>
-
-                  <p className="mt-1 text-lg font-bold text-slate-950">
-                    {formatCurrency(
-                      apr.totalInterest,
-                    )}
-                  </p>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            {/* Questions */}
-            <div className="mt-6">
-
-              <h5 className="text-sm font-bold text-slate-950">
-                Questions to ask the lender
-              </h5>
-
-              <div className="mt-4 space-y-3">
-
-                <div className="flex gap-3">
-                  <span className="font-bold text-slate-400">
-                    1.
-                  </span>
-
-                  <p className="text-sm leading-6 text-slate-700">
-                    What is the final interest rate, and is it
-                    fixed or floating?
-                  </p>
-                </div>
-
-                <div className="flex gap-3">
-                  <span className="font-bold text-slate-400">
-                    2.
-                  </span>
+    </div>
 
-                  <p className="text-sm leading-6 text-slate-700">
-                    What is the APR or total borrowing cost after
-                    all processing fees and mandatory charges?
-                  </p>
-                </div>
 
-                <div className="flex gap-3">
-                  <span className="font-bold text-slate-400">
-                    3.
-                  </span>
+    {/* =====================================================
+        COST
+    ====================================================== */}
+    <div className="mt-6 rounded-2xl border border-slate-200 p-5">
 
-                  <p className="text-sm leading-6 text-slate-700">
-                    What will my exact EMI and total repayment be
-                    for this tenure?
-                  </p>
-                </div>
+      <h5 className="text-sm font-bold text-slate-950">
+        Ask for the full cost, not just the interest rate
+      </h5>
 
-                <div className="flex gap-3">
-                  <span className="font-bold text-slate-400">
-                    4.
-                  </span>
+      <div className="mt-4 grid gap-4 sm:grid-cols-3">
 
-                  <p className="text-sm leading-6 text-slate-700">
-                    Are there any additional insurance,
-                    documentation, foreclosure or other mandatory
-                    charges?
-                  </p>
-                </div>
+        {/* APR */}
+        <div>
 
-              </div>
+          <p className="text-xs font-semibold text-slate-500">
+            Estimated APR
+          </p>
 
-            </div>
+          <p className="mt-1 text-lg font-bold text-slate-950">
+            {formatPercent(
+              apr.effectiveAPR,
+            )}
+          </p>
 
-            {/* Negotiation script */}
-            <div className="mt-6 rounded-2xl bg-slate-900 p-5 text-white">
+        </div>
 
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-300">
-                What I would say
-              </p>
 
-              <p className="mt-3 text-sm leading-7">
+        {/* Processing fee */}
+        <div>
 
-                {recommendedAmount.recommendedAmount !==
-                  undefined &&
-                emiRecommendation.recommendedEMI !==
-                  undefined ? (
-                  <>
-                    “I am looking for a loan of{' '}
-                    {formatCurrency(
-                      recommendedAmount.recommendedAmount,
-                    )}
-                    . I want the EMI to stay around{' '}
-                    {formatCurrency(
-                      emiRecommendation.recommendedEMI,
-                    )}
-                    , and I am comparing the total borrowing cost
-                    rather than only the advertised interest rate.
-                    Please share your best rate, APR, processing fee
-                    and total repayment for this tenure.”
-                  </>
-                ) : (
-                  <>
-                    “Before discussing a new loan, I want to
-                    understand my existing loan obligations and
-                    the total cost of the proposed loan. Please
-                    help me confirm my current outstanding EMIs,
-                    the interest rate, all fees and the exact
-                    repayment amount.”
-                  </>
-                )}
+          <p className="text-xs font-semibold text-slate-500">
+            Processing fee
+          </p>
 
-              </p>
+          <p className="mt-1 text-lg font-bold text-slate-950">
+            {formatCurrency(
+              apr.processingFee,
+            )}
+          </p>
 
-            </div>
+          <p className="mt-1 text-xs text-slate-500">
+            Assumed {apr.processingFeePercent}%
+          </p>
 
-            {/* Disclaimer */}
-            <div className="mt-5 border-t border-slate-200 pt-5">
+        </div>
 
-              <p className="text-xs leading-5 text-slate-500">
 
-                <strong className="text-slate-700">
-                  Important:
-                </strong>{' '}
+        {/* Total interest */}
+        <div>
 
-                The lender's eligible amount may be higher or lower
-                than the safe amount shown here. The safe amount is
-                the amount this assessment estimates you can
-                reasonably carry based on the information provided.
+          <p className="text-xs font-semibold text-slate-500">
+            Total interest
+          </p>
 
-              </p>
+          <p className="mt-1 text-lg font-bold text-slate-950">
+            {formatCurrency(
+              apr.totalInterest,
+            )}
+          </p>
 
-            </div>
+        </div>
 
-          </div>
+      </div>
 
-        </section>
+    </div>
+
+
+    {/* =====================================================
+        QUESTIONS TO ASK THE LENDER
+    ====================================================== */}
+    <div className="mt-6">
+
+      <h5 className="text-sm font-bold text-slate-950">
+        Questions to ask the lender
+      </h5>
+
+      <div className="mt-4 space-y-3">
+
+        <div className="flex gap-3">
+          <span className="font-bold text-slate-400">
+            1.
+          </span>
+
+          <p className="text-sm leading-6 text-slate-700">
+            What is the final interest rate, and is it
+            fixed or floating?
+          </p>
+        </div>
+
+
+        <div className="flex gap-3">
+          <span className="font-bold text-slate-400">
+            2.
+          </span>
+
+          <p className="text-sm leading-6 text-slate-700">
+            What is the APR or total borrowing cost after
+            all processing fees and mandatory charges?
+          </p>
+        </div>
+
+
+        <div className="flex gap-3">
+          <span className="font-bold text-slate-400">
+            3.
+          </span>
+
+          <p className="text-sm leading-6 text-slate-700">
+            What will my exact EMI and total repayment be
+            for this tenure?
+          </p>
+        </div>
+
+
+        <div className="flex gap-3">
+          <span className="font-bold text-slate-400">
+            4.
+          </span>
+
+          <p className="text-sm leading-6 text-slate-700">
+            Are there any additional insurance,
+            documentation, foreclosure or other mandatory
+            charges?
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    {/* =====================================================
+        NEGOTIATION SCRIPT
+    ====================================================== */}
+    <div className="mt-6 rounded-2xl bg-slate-900 p-5 text-white">
+
+      <p className="text-xs font-semibold uppercase tracking-wide text-slate-300">
+        What I would say
+      </p>
+
+      <p className="mt-3 text-sm leading-7">
+
+        {recommendedAmount.recommendedAmount !== undefined &&
+        emiRecommendation.recommendedEMI !== undefined ? (
+          <>
+            “I am looking for a loan of{' '}
+            {formatCurrency(
+              recommendedAmount.recommendedAmount,
+            )}
+            . I want the EMI to stay around{' '}
+            {formatCurrency(
+              emiRecommendation.recommendedEMI,
+            )}
+            , and I am comparing the total borrowing cost
+            rather than only the advertised interest rate.
+            Please share your best rate, APR, processing fee
+            and total repayment for this tenure.”
+          </>
+        ) : (
+          <>
+            “Before discussing a new loan, I want to
+            understand my existing loan obligations and
+            the total cost of the proposed loan. Please
+            help me confirm my current outstanding EMIs,
+            the interest rate, all fees and the exact
+            repayment amount.”
+          </>
+        )}
+
+      </p>
+
+    </div>
+
+
+    {/* =====================================================
+        DISCLAIMER
+    ====================================================== */}
+    <div className="mt-5 border-t border-slate-200 pt-5">
+
+      <p className="text-xs leading-5 text-slate-500">
+
+        <strong className="text-slate-700">
+          Important:
+        </strong>{' '}
+
+        The lender's eligible amount may be higher or lower
+        than the safe amount shown here. The safe amount is
+        the amount this assessment estimates you can
+        reasonably carry based on the information provided.
+
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
 
         {/* =====================================================
             FINAL DISCLAIMER
