@@ -10,7 +10,7 @@ It helps users understand:
 - What EMI and tenure they should target
 - What to negotiate with a lender
 
-The application generates a one-screen **Negotiation Card** that can also be saved as a PDF.
+The application also generates a one-screen **Negotiation Card** that can be saved as a PDF.
 
 ---
 
@@ -48,23 +48,42 @@ The application runs entirely in the browser with no backend or database.
 - Node.js 18+
 - npm
 
-### Install
+### 1. Clone the repository
 
 ```bash
 git clone <your-github-repository-url>
 cd borrower-copilot
+```
+
+### 2. Install dependencies
+
+```bash
 npm install
+```
 
-### Start
+### 3. Start the development server
+
+```bash
 npm run dev
+```
+
 Open the local URL shown by Vite, usually:
+
+```text
 http://localhost:5173
+```
 
-Production Build
+### 4. Build for production
+
+```bash
 npm run build
+```
 
-### How It Works
+---
 
+## How It Works
+
+```text
 Borrower Information
         ↓
 Borrower Profile
@@ -76,73 +95,207 @@ Affordability + Rate + EMI + APR + Stress Test
 Results Dashboard
         ↓
 Negotiation Card
+        ↓
+Save as PDF
+```
 
 The application intentionally separates:
 
-Lender-style eligibility
+**Lender-style eligibility**
+
 from
-Safe borrower affordability
+
+**Safe borrower affordability**
 
 This prevents the system from simply recommending the maximum amount a lender might consider.
 
-### Key Design Decisions
+---
 
-Unknown is not Zero
+## Key Design Decisions
+
+### 1. Unknown Is Not Zero
 
 Unknown existing EMIs or expenses are never silently treated as zero.
 
-When important information is missing, the application can return NEED MORE INFO instead of making an unsafe recommendation.
+For example:
 
-### Explainable Calculations
+- `₹0` means the borrower explicitly reported zero.
+- `Unknown` means the information is unavailable.
 
-The results are based on explicit rules and assumptions rather than a black-box model.
+When important information is missing, the application can return **NEED MORE INFO** instead of making an unsafe recommendation.
 
-Detailed rules and assumptions are documented in:
+---
 
-RULES.md
+### 2. Explainable Calculations
 
-### Adaptive Questioning
+The results are based on explicit financial rules and assumptions rather than a black-box model.
 
-The application starts with a small set of core questions and asks additional questions only when they can materially improve the assessment.
+The rules, thresholds, assumptions and rationale are documented in:
 
-### Test Scenarios
+[`RULES.md`](./RULES.md)
 
-The application was tested with three borrower profiles:
+---
 
-Borrower	Expected Decision
-Priya	BORROW
-Ravi	BORROW LESS
-Anita	NEED MORE INFO
+### 3. Adaptive Questioning
 
-These scenarios demonstrate the application's ability to handle:
+The application starts with a small set of core questions.
 
-Comfortable borrowing
-Borrowing beyond safe affordability
-Incomplete financial information
-Limitations
+Additional questions are asked only when they can materially improve the assessment.
 
-This is a prototype decision-support tool.
+For example:
 
-The results are estimates based only on user-provided information and are not loan approvals, guaranteed rates, or financial advice.
+- Self-employed or informal income → income stability
+- Unknown credit score → recent payment history
 
-### The application does not currently use:
+This keeps the questionnaire focused while still accounting for important risk factors.
 
-Credit-bureau APIs
-Bank statements
-Verified income documents
-Lender APIs
-Machine-learning models
-Backend storage
+---
 
-### Actual lender decisions may consider additional information and lender-specific policies.
+### 4. Safe Affordability vs Lender Eligibility
 
-Future Improvements
-Lender-specific loan products and pricing
-Real loan-offer comparison
-More detailed income and liability verification
-Improved business and secured-loan models
-Additional financial scenarios
-Personalized negotiation guidance
-Project Principle
+The application shows both:
 
-A borrower should know both what they may be eligible for and what they can safely afford — because those are not necessarily the same amount.
+- A simplified lender-style eligibility estimate
+- A more conservative safe affordability estimate
+
+The purpose is to help borrowers understand that:
+
+> **What a lender may be willing to lend is not necessarily what a borrower should comfortably borrow.**
+
+---
+
+## Test Scenarios
+
+The application was tested using the three challenge borrower scenarios:
+
+| Borrower | Expected Decision |
+|----------|------------------|
+| Priya | BORROW |
+| Ravi | BORROW LESS |
+| Anita | NEED MORE INFO |
+
+These scenarios demonstrate:
+
+- Comfortable borrowing within safe affordability
+- Borrowing beyond safe affordability
+- Handling incomplete financial information without making unsafe assumptions
+
+---
+
+## Negotiation Card
+
+After completing the assessment, Borrower Copilot generates a compact negotiation card containing key information a borrower can use when discussing a loan with a lender.
+
+It can include:
+
+- Target loan amount
+- Target interest-rate range
+- EMI ceiling
+- Target tenure
+- Effective APR
+- Processing fee
+- Total interest
+- Questions to ask the lender
+- Negotiation script
+- Important limitations
+
+The card can be saved as a PDF using the browser's native print functionality.
+
+---
+
+## Confidence & Transparency
+
+The application communicates confidence based on the completeness of the available information.
+
+### HIGH
+
+Sufficient information is available for the calculation within the prototype's assumptions.
+
+### MEDIUM
+
+The calculation is possible, but some important information is missing or uncertain.
+
+### LOW
+
+Required information is unavailable, so the application avoids producing a potentially misleading recommendation.
+
+---
+
+## Limitations
+
+Borrower Copilot is a prototype decision-support tool.
+
+The results are estimates based only on user-provided information. They are **not**:
+
+- Loan approvals
+- Guaranteed interest rates
+- Guaranteed lender offers
+- Financial advice
+
+The application does not currently use:
+
+- Credit-bureau APIs
+- Bank statements
+- Verified income documents
+- Lender APIs
+- Machine-learning models
+- Backend storage
+
+Actual lender decisions may consider additional information such as verified income, bank statements, ITRs, credit history, existing liabilities, collateral and lender-specific underwriting policies.
+
+---
+
+## Future Improvements
+
+Potential next steps include:
+
+1. Lender-specific loan products and pricing
+2. Real loan-offer comparison
+3. More detailed income and liability verification
+4. Improved business and secured-loan models
+5. Additional financial scenarios
+6. Personalized negotiation guidance based on actual lender offers
+
+---
+
+## Project Structure
+
+```text
+src/
+├── components/
+│   ├── Questionnaire.tsx
+│   ├── QuestionRenderer.tsx
+│   └── ResultsDashboard.tsx
+│
+├── engine/
+│   ├── affordability.ts
+│   ├── aprCalculator.ts
+│   ├── assessBorrower.ts
+│   ├── borrowDecision.ts
+│   ├── emiCalculator.ts
+│   ├── emiRecommendation.ts
+│   ├── getAdaptiveQuestions.ts
+│   ├── lenderEstimate.ts
+│   ├── loanAmount.ts
+│   ├── rateEstimator.ts
+│   ├── recommendedAmount.ts
+│   └── stressTest.ts
+│
+├── types/
+│   ├── assessment.ts
+│   ├── answers.ts
+│   ├── borrower.ts
+│   └── questionnaire.ts
+│
+├── App.tsx
+├── main.tsx
+└── index.css
+```
+
+The financial calculations are kept in the `engine` layer rather than being scattered across the UI. This makes the rules easier to understand, test and modify independently from the interface.
+
+---
+
+## Project Principle
+
+> **A borrower should know both what they may be eligible for and what they can safely afford — because those are not necessarily the same amount.**
