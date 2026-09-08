@@ -90,4 +90,18 @@ export const adaptiveQuestions: Question[] = [
       'Include EMIs or required monthly payments for personal loans, app loans, vehicle loans, or other borrowing.',
   },
 
+    {
+    id: 'collateral-value',
+
+    section: 'LOAN',
+
+    text: 'Do you have property or another asset that you could potentially offer as security for this loan?',
+
+    type: 'CURRENCY',
+
+    required: true,
+
+    helperText:
+      'Enter the approximate current value of the asset. This can help us identify whether a secured loan may be a better fit.',
+  },
 ]

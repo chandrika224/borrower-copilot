@@ -11,7 +11,7 @@ export function buildBorrowerProfile(
       monthlyNetIncome: Number(answers['monthly-income']),
       type: answers['income-type'] as BorrowerProfile['income']['type'],
       stability:
-  answers['income-stability'] as BorrowerProfile['income']['stability'],
+        answers['income-stability'] as BorrowerProfile['income']['stability'],
     },
 
     expenses: {
@@ -32,7 +32,7 @@ export function buildBorrowerProfile(
           : undefined,
 
       paymentHistory:
-  answers['payment-history'] as BorrowerProfile['credit']['paymentHistory'],
+        answers['payment-history'] as BorrowerProfile['credit']['paymentHistory'],
     },
 
     loanRequest: {
@@ -44,5 +44,13 @@ export function buildBorrowerProfile(
 
       requestedAmount: Number(answers['loan-amount']),
     },
+
+    collateral:
+      answers['collateral-value'] !== undefined
+        ? {
+            available: Number(answers['collateral-value']) > 0,
+            estimatedValue: Number(answers['collateral-value']),
+          }
+        : undefined,
   }
 }

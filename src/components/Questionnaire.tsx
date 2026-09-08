@@ -89,6 +89,10 @@ export function Questionnaire() {
           answers
         )
 
+          console.log('INITIAL PROFILE:', initialProfile)
+          console.log('ANSWERS BEFORE ADAPTIVE:', answers)
+          console.log('ADAPTIVE QUESTIONS:', adaptiveQuestions)
+
       if (adaptiveQuestions.length > 0) {
         setQuestions(adaptiveQuestions)
         setPhase('ADAPTIVE')

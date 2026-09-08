@@ -19,7 +19,7 @@ export interface BorrowDecisionResult {
 export function decideBorrowing(
   borrower: BorrowerProfile,
   annualRate: number,
-  tenureMonths: number,
+  tenureMonths: number
 ): BorrowDecisionResult {
   const affordability =
     calculateAffordability(borrower)
@@ -63,24 +63,25 @@ export function decideBorrowing(
   }
 
   // Requested amount is higher than safe amount.
-  if (requestedAmount > safeAmount) {
-    return {
-      decision: 'BORROW_LESS',
-      requestedAmount,
-      safeAmount,
-      safeEMI,
-      reason:
-        'The requested amount would require a higher EMI than your current safe affordability allows.',
-    }
-  }
-
-  // Requested amount appears affordable.
+if (requestedAmount > safeAmount) {
   return {
-    decision: 'BORROW',
+    decision: 'BORROW_LESS',
     requestedAmount,
     safeAmount,
     safeEMI,
     reason:
-      'The requested loan amount appears to fit within your current safe EMI capacity based on the information provided.',
+      'The requested amount would require a higher EMI than your current safe affordability allows.',
   }
+}
+
+
+// Requested amount appears affordable.
+return {
+  decision: 'BORROW',
+  requestedAmount,
+  safeAmount,
+  safeEMI,
+  reason:
+    'The requested loan amount appears to fit within your current safe EMI capacity based on the information provided.',
+}
 }

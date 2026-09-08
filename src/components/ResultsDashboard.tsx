@@ -14,13 +14,14 @@ export function ResultsDashboard({
     window.print()
   }
   const {
-    decision,
-    fairRate,
-    recommendedAmount,
-    emiRecommendation,
-    apr,
-    stressTest,
-  } = assessment
+  decision,
+  fairRate,
+  recommendedAmount,
+  emiRecommendation,
+  apr,
+  stressTest,
+  productRoute,
+} = assessment
 
   // =====================================================
   // FORMATTING HELPERS
@@ -277,6 +278,57 @@ export function ResultsDashboard({
               </p>
 
             </div>
+
+          </div>
+
+        </section>
+
+        {/* =====================================================
+        BEST-FIT LOAN ROUTE
+        ====================================================== */}
+        <section className="mb-10">
+
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
+
+            <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+              Best-fit loan route
+            </p>
+
+            <h3 className="mt-3 text-2xl font-bold text-slate-950">
+              {productRoute.route === 'SECURED_BUSINESS'
+                ? '🔒 Secured business loan'
+                : productRoute.route === 'BUSINESS'
+                  ? 'Business loan'
+                  : productRoute.route === 'VEHICLE'
+                    ? 'Vehicle loan'
+                    : productRoute.route === 'PERSONAL'
+                      ? 'Personal loan'
+                      : 'More information needed'}
+            </h3>
+
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+              <span className="font-semibold text-slate-900">
+                Why:
+              </span>{' '}
+              {productRoute.reason}
+            </p>
+
+            {productRoute.route === 'SECURED_BUSINESS' && (
+              <div className="mt-5 rounded-xl bg-slate-50 p-4">
+
+                <p className="text-sm font-semibold text-slate-900">
+                  Important
+                </p>
+
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  Having collateral does not guarantee approval or
+                  a specific loan amount. Actual eligibility depends
+                  on lender valuation, legal verification and
+                  underwriting.
+                </p>
+
+              </div>
+            )}
 
           </div>
 
@@ -1171,6 +1223,21 @@ export function ResultsDashboard({
 
     </div>
 
+    {/* Missing information warning */}
+    {decision.decision === 'NEED_MORE_INFO' && (
+      <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4">
+        <p className="text-sm font-semibold text-amber-900">
+          Do not commit to a new loan yet
+        </p>
+
+        <p className="mt-1 text-sm leading-6 text-amber-800">
+          Your existing monthly loan payments are unknown, so we cannot
+          safely determine how much additional EMI you can afford.
+          Confirm your current EMI obligations before accepting a new loan.
+        </p>
+      </div>
+    )}
+
 
     {/* =====================================================
         COST
@@ -1369,6 +1436,8 @@ export function ResultsDashboard({
   </div>
 
 </section>
+
+
 
         {/* =====================================================
             FINAL DISCLAIMER

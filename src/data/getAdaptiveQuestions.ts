@@ -8,14 +8,15 @@ export function getAdaptiveQuestions(
 ) {
   const questions = []
 
-  const incomeType = borrower.income.type
-  const creditScore = borrower.credit.score
+  const loanPurpose = borrower.loanRequest.purpose
 
-  if (
-    (incomeType === 'SELF_EMPLOYED' ||
-      incomeType === 'INFORMAL') &&
-    answers['income-stability'] === undefined
-  ) {
+  /*
+   * Income stability
+   *
+   * Income stability affects repayment confidence and
+   * fair-rate assessment, so ask when it is not known.
+   */
+  if (answers['income-stability'] === undefined) {
     const question = adaptiveQuestions.find(
       (item) => item.id === 'income-stability'
     )
@@ -25,12 +26,35 @@ export function getAdaptiveQuestions(
     }
   }
 
-  if (
-    creditScore === undefined &&
-    answers['payment-history'] === undefined
-  ) {
+  /*
+   * Payment history
+   *
+   * Credit score and repayment history are different signals.
+   * A borrower may know their score but still need to provide
+   * repayment-history information.
+   */
+  if (answers['payment-history'] === undefined) {
     const question = adaptiveQuestions.find(
       (item) => item.id === 'payment-history'
+    )
+
+    if (question) {
+      questions.push(question)
+    }
+  }
+
+  /*
+   * Collateral
+   *
+   * Only ask about collateral when the borrowing purpose is
+   * business-related because it can change the product route.
+   */
+  if (
+    loanPurpose === 'BUSINESS' &&
+    answers['collateral-value'] === undefined
+  ) {
+    const question = adaptiveQuestions.find(
+      (item) => item.id === 'collateral-value'
     )
 
     if (question) {

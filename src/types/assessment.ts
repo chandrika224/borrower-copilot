@@ -6,6 +6,7 @@ import type { RecommendedAmountResult } from '../engine/recommendedAmount'
 import type { EMIRecommendationResult } from '../engine/emiRecommendation'
 import type { StressTestResult } from '../engine/stressTest'
 import type { APRResult } from '../engine/aprCalculator'
+import type { ProductRouteResult } from '../engine/productRouting'
 
 export interface LoanAssessment {
   decision: BorrowDecisionResult
@@ -16,4 +17,5 @@ export interface LoanAssessment {
   emiRecommendation: EMIRecommendationResult
   apr: APRResult
   stressTest: StressTestResult
+  productRoute: ProductRouteResult
 }

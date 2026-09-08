@@ -1,4 +1,5 @@
 import type { BorrowerProfile } from '../types/borrower'
+import { determineProductRoute } from './productRouting'
 import type { LoanAssessment } from '../types/assessment'
 
 import { calculateAffordability } from './affordability'
@@ -143,24 +144,32 @@ export function assessBorrower(
   // --------------------------------------------------
 
   const decision =
-    decideBorrowing(
-      borrower,
-      annualRate,
-      tenureMonths
-    )
+  decideBorrowing(
+    borrower,
+    annualRate,
+    tenureMonths,
+  )
+
+  // --------------------------------------------------
+  // 9. Determine best-fit loan product
+  // --------------------------------------------------
+
+  const productRoute =
+    determineProductRoute(borrower)
 
   // --------------------------------------------------
   // 9. Return complete assessment
   // --------------------------------------------------
 
   return {
-    decision,
-    affordability,
-    lenderEstimate,
-    fairRate,
-    recommendedAmount,
-    emiRecommendation,
-    apr,
-    stressTest,
-  }
+  decision,
+  affordability,
+  lenderEstimate,
+  fairRate,
+  recommendedAmount,
+  emiRecommendation,
+  apr,
+  stressTest,
+  productRoute,
+}
 }

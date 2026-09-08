@@ -57,14 +57,16 @@ export interface LoanRequest {
   requestedAmount: number
 }
 
+export interface CollateralProfile {
+  available: boolean
+  estimatedValue?: number
+}
+
 export interface BorrowerProfile {
   age: number
-
   income: IncomeProfile
-
   expenses: ExpenseProfile
-
   credit: CreditProfile
-
   loanRequest: LoanRequest
+  collateral?: CollateralProfile
 }
